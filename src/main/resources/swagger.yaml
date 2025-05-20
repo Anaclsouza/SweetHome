@@ -1,0 +1,373 @@
+openapi: 3.0.1
+info:
+  title: SweetHome
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Api de gerenciamento de compra de apartamento
+
+paths:
+  /user/register:
+    post:
+      tags:
+        - user
+      operationId: registerUser
+      summary: Registers a new user in the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUser"
+        required: true
+      responses:
+        "201":
+          description: success creating user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /user/login:
+    post:
+      tags:
+        - login
+      operationId: UserLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: success getting a user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+
+  /apartment:
+    post:
+      tags:
+        - apartment
+      security:
+        - bearerAuth: []
+      operationId: RegisterApartment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewApartment"
+        required: true
+      responses:
+        "201":
+          description: success creating apartment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Apartment"
+
+    get:
+      tags:
+        - apartment
+      security:
+        - bearerAuth: []
+      operationId: FindAllApartment
+      responses:
+        "200":
+          description: Successfully retrieved apartment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Apartment"
+
+  /apartment/{id}:
+    patch:
+      tags:
+        - apartment
+      security:
+        - bearerAuth: []
+      operationId: UpdateApartment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateApartment"
+        required: true
+      responses:
+        "200":
+          description: success updating apartment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Apartment"
+
+    get:
+      tags:
+        - apartment
+      security:
+        - bearerAuth: []
+      operationId: FindApartment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: success finding apartment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Apartment"
+
+
+  /apartment/favorite/{id}:
+    patch:
+      tags:
+        - apartment
+      security:
+        - bearerAuth: []
+      operationId: UpdateApartmentFavorite
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FavoriteApartment"
+        required: true
+      responses:
+        "200":
+          description: success updating apartment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Apartment"
+
+  /apartment/scheduling:
+    post:
+      tags:
+        - scheduling
+      security:
+        - bearerAuth: []
+      operationId: CreateScheduling
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewScheduling"
+        required: true
+      responses:
+        "201":
+          description: success scheduling to apartment visit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchedulingResponse"
+
+
+    get:
+      tags:
+        - scheduling
+      security:
+        - bearerAuth: []
+      operationId: FindScheduling
+      responses:
+        "200":
+          description: success finding apartment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchedulingResponse"
+
+  /apartment/scheduling/{id}:
+    patch:
+      tags:
+        - scheduling
+      security:
+        - bearerAuth: []
+      operationId: scheduling
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateScheduling"
+        required: true
+      responses:
+        "200":
+          description: sucess updating scheduling
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SchedulingResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UserType:
+      type: string
+      enum: [ENTERPRISE,BUYER]
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        userType:
+          $ref: "#/components/schemas/UserType"
+
+    NewUser:
+      type: object
+      required: [name,email,password,userType]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        userType:
+          $ref: "#/components/schemas/UserType"
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+
+    Availability:
+      type: string
+      enum: [AVAILABLE, NOT AVALIABLE]
+
+    NewApartment:
+      type: object
+      properties:
+        structureDescription:
+          type: string
+        address:
+          type: string
+        price:
+          type: integer
+        availability:
+          $ref: "#/components/schemas/Availability"
+
+    Apartment:
+      type: object
+      properties:
+        id:
+          type: integer
+        structureDescription:
+          type: string
+        address:
+          type: string
+        price:
+          type: integer
+        availability:
+          $ref: "#/components/schemas/Availability"
+        favorite:
+          type: boolean
+
+    UpdateApartment:
+      type: object
+      properties:
+        structureDescription:
+          type: string
+        address:
+          type: string
+        price:
+          type: integer
+        availability:
+          $ref: "#/components/schemas/Availability"
+        favorite:
+          type: boolean
+
+    FavoriteApartment:
+      type: object
+      required:
+        - favorite
+      properties:
+        favorite:
+          type: boolean
+
+
+
+    StatusScheduling:
+      type: string
+      enum: [SCHEDULED,PENDING,VISITED]
+
+
+    NewScheduling:
+      type: object
+      properties:
+        userId:
+          type: integer
+        apartmentId:
+          type: integer
+        dateTime:
+          type: string
+        status:
+          $ref: "#/components/schemas/StatusScheduling"
+
+    SchedulingResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        apartmentId:
+          type: integer
+        dateTime:
+          type: string
+        status:
+          $ref: "#/components/schemas/StatusScheduling"
+
+    UpdateScheduling:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        apartmentId:
+          type: integer
+        dateTime:
+          type: string
+        status:
+          $ref: "#/components/schemas/StatusScheduling"
