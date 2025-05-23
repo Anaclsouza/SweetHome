@@ -236,20 +236,18 @@ components:
         id:
           type: integer
           format: int64
-        name:
+        user:
           type: string
-        email:
+        password:
           type: string
         userType:
           $ref: "#/components/schemas/UserType"
 
     NewUser:
       type: object
-      required: [name,email,password,userType]
+      required: [user,password,userType]
       properties:
-        name:
-          type: string
-        email:
+        user:
           type: string
         password:
           type: string
@@ -258,7 +256,7 @@ components:
 
     LoginRequest:
       type: object
-      required: [email, password]
+      required: [user, password]
       properties:
         email:
           type: string
@@ -303,6 +301,23 @@ components:
         favorite:
           type: boolean
 
+
+    FavoriteApartment:
+      type: object
+      properties:
+        id:
+          type: integer
+        structureDescription:
+          type: string
+        address:
+          type: string
+        price:
+          type: integer
+        availability:
+          $ref: "#/components/schemas/Availability"
+        favorite:
+          type: boolean
+
     UpdateApartment:
       type: object
       properties:
@@ -316,15 +331,6 @@ components:
           $ref: "#/components/schemas/Availability"
         favorite:
           type: boolean
-
-    FavoriteApartment:
-      type: object
-      required:
-        - favorite
-      properties:
-        favorite:
-          type: boolean
-
 
 
     StatusScheduling:
@@ -371,3 +377,27 @@ components:
           type: string
         status:
           $ref: "#/components/schemas/StatusScheduling"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
