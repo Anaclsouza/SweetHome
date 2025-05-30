@@ -6,14 +6,9 @@ import com.example.sweetHome.domain.service.SweetHomeService;
 
 public class SweetHomeServiceImpl implements SweetHomeService {
 
-    private final SweetHomeRepository sweetHomeRepository;
-
-    public SweetHomeServiceImpl(SweetHomeRepository sweetHomeRepository) {
-        this.sweetHomeRepository = sweetHomeRepository;
-    }
 
     @Override
-    public Login createUser(Login login) {
-        return sweetHomeRepository.save(login);
+    public <Optional> Login foundUserById(Integer id) {
+        return null;
     }
 }
